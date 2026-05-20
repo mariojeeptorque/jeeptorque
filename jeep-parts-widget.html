@@ -437,9 +437,13 @@ Respond ONLY with a valid JSON array. No markdown. No explanation. Return 12-16 
   const usr = `Query: "${query}"\nSite keys: ${siteList.join(", ")}`;
 
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+const res = await fetch("https://api.anthropic.com/v1/messages", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "x-api-key": "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",
+    "anthropic-version": "2023-06-01"
+  },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1000,
