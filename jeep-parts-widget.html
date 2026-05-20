@@ -437,11 +437,9 @@ Respond ONLY with a valid JSON array. No markdown. No explanation. Return 12-16 
   const usr = `Query: "${query}"\nSite keys: ${siteList.join(", ")}`;
 
   try {
-const res = await fetch("https://jeeptorque1.mmartins-ct.workers.dev", {
+const res = await fetch("/.jeeptorque1.mmartins-ct.workers.dev", {
   method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1000,
