@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jeep Parts Finder</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --olive: #4a5c2f;
+    --olive-light: #6b7f4a;
+    --amber: #c8861a;
+    --amber-light: #e8a030;
+    --cream: #f5f0e8;
+    --sand: #e8dfc8;
+    --bark: #2c2418;
+    --bark-mid: #4a3f30;
+    --bark-light: #7a6a58;
+    --white: #ffffff;
+    --green-bg: #eef2e8;
+    --red-bg: #faeaea;
+    --yellow-bg: #fdf6e3;
+    --green-txt: #2d5a1b;
+    --red-txt: #8b1f1f;
+    --yellow-txt: #7a5400;
+    --radius: 6px;
+    --radius-lg: 10px;
+  }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--cream);
+    color: var(--bark);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--bark);
+    padding: 20px 24px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 3px solid var(--amber);
+  }
+  .logo-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--amber);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-icon svg { width: 24px; height: 24px; fill: var(--bark); }
+  .header-text h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .header-text p {
+    font-size: 12px;
+    color: var(--bark-light);
+    margin-top: 3px;
+  }
+
+  /* ── Body ── */
+  .body { padding: 20px; }
+
+  /* ── Search ── */
+  .search-wrap {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .search-wrap input {
+    flex: 1;
+    height: 42px;
+    border: 1.5px solid var(--sand);
+    border-radius: var(--radius);
+    background: var(--white);
+    padding: 0 14px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    color: var(--bark);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: var(--amber); }
+  .search-wrap input::placeholder { color: var(--bark-light); }
+  .btn-search {
+    height: 42px;
+    padding: 0 18px;
+    background: var(--amber);
+    color: var(--bark);
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .btn-search:hover { background: var(--amber-light); }
+  .btn-search:active { transform: scale(0.97); }
+  .btn-search svg { width: 16px; height: 16px; fill: var(--bark); flex-shrink: 0; }
+
+  /* ── Section label ── */
+  .section-lbl {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bark-light);
+    margin-bottom: 8px;
+  }
+
+  /* ── Category chips ── */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .chip {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--sand);
+    background: var(--white);
+    color: var(--bark-mid);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .chip.active {
+    background: var(--olive);
+    border-color: var(--olive);
+    color: var(--white);
+  }
+  .chip:hover:not(.active) { border-color: var(--bark-light); }
+
+  /* ── Retailer toggles ── */
+  .retailers { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px; margin-bottom: 20px; }
+  .retailer {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 10px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--sand);
+    background: var(--white);
+    color: var(--bark-mid);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .retailer.active {
+    background: var(--olive-light);
+    border-color: var(--olive);
+    color: var(--white);
+  }
+  .retailer:hover:not(.active) { border-color: var(--bark-light); }
+
+  /* ── Stats row ── */
+  .stats { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stat {
+    flex: 1;
+    min-width: 70px;
+    background: var(--white);
+    border: 1.5px solid var(--sand);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    text-align: center;
+  }
+  .stat-val { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700; color: var(--bark); line-height: 1; }
+  .stat-lbl { font-size: 10px; color: var(--bark-light); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 3px; }
+  .stat.stat-in .stat-val { color: var(--green-txt); }
+  .stat.stat-out .stat-val { color: var(--red-txt); }
+  .stat.stat-ltd .stat-val { color: var(--yellow-txt); }
+
+  /* ── Results ── */
+  #results { display: flex; flex-direction: column; gap: 8px; }
+
+  .result-card {
+    background: var(--white);
+    border: 1.5px solid var(--sand);
+    border-radius: var(--radius-lg);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .result-card:hover { border-color: var(--bark-light); box-shadow: 0 2px 8px rgba(44,36,24,0.08); }
+
+  .result-left { flex: 1; min-width: 0; }
+  .result-name { font-weight: 500; font-size: 14px; color: var(--bark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+  .result-meta { font-size: 11px; color: var(--bark-light); }
+  .result-site { font-size: 11px; color: var(--bark-light); margin-top: 2px; }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-in { background: var(--green-bg); color: var(--green-txt); }
+  .badge-out { background: var(--red-bg); color: var(--red-txt); }
+  .badge-ltd { background: var(--yellow-bg); color: var(--yellow-txt); }
+
+  .result-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--sand);
+    color: var(--bark-light);
+    text-decoration: none;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .result-link:hover { border-color: var(--amber); color: var(--amber); }
+  .result-link svg { width: 14px; height: 14px; fill: currentColor; }
+
+  /* ── Empty / Spinner ── */
+  .empty {
+    text-align: center;
+    padding: 32px 20px;
+    color: var(--bark-light);
+    font-size: 14px;
+  }
+  .empty svg { width: 36px; height: 36px; fill: var(--sand); display: block; margin: 0 auto 10px; }
+
+  .spinner { display: none; text-align: center; padding: 24px; color: var(--bark-light); font-size: 14px; }
+  .spin { display: inline-block; animation: spin 0.9s linear infinite; margin-right: 6px; vertical-align: -3px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin svg { width: 18px; height: 18px; fill: var(--amber); }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid var(--sand); margin: 16px 0; }
+
+  /* ── Footer ── */
+  .footer { padding: 12px 20px; text-align: center; font-size: 11px; color: var(--bark-light); border-top: 1px solid var(--sand); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-icon">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2C8 2 4 5 4 9c0 2.5 1.3 4.7 3.3 6L6 20h2l1-2h6l1 2h2l-1.3-5C18.7 13.7 20 11.5 20 9c0-4-4-7-8-7zm-3 11.5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm6 0c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zM8 8.5C8 7.1 9.1 6 10.5 6h3C14.9 6 16 7.1 16 8.5H8z"/>
+    </svg>
+  </div>
+  <div class="header-text">
+    <h1>Jeep Parts Finder</h1>
+    <p>Search stock status across major retailers — no prices, just availability</p>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <input type="text" id="query" placeholder="e.g. lift kit, front bumper, axle shaft, skid plate…" />
+    <button class="btn-search" onclick="doSearch()">
+      <svg viewBox="0 0 24 24"><path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke="#2c2418" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      Search
+    </button>
+  </div>
+
+  <!-- Category Filter -->
+  <div class="section-lbl">Filter by category</div>
+  <div class="chips" id="cats">
+    <span class="chip active" data-cat="all">All Parts</span>
+    <span class="chip" data-cat="suspension">Suspension</span>
+    <span class="chip" data-cat="drivetrain">Drivetrain</span>
+    <span class="chip" data-cat="exterior">Exterior</span>
+    <span class="chip" data-cat="interior">Interior</span>
+    <span class="chip" data-cat="engine">Engine</span>
+    <span class="chip" data-cat="electrical">Electrical</span>
+    <span class="chip" data-cat="brakes">Brakes</span>
+  </div>
+
+  <!-- Retailers -->
+  <div class="section-lbl">Retailers to search</div>
+  <div class="retailers" id="retailers">
+    <span class="retailer active" data-site="quadratec">Quadratec</span>
+    <span class="retailer active" data-site="morris4x4">Morris 4x4</span>
+    <span class="retailer active" data-site="extremeterrain">ExtremeTerrain</span>
+    <span class="retailer active" data-site="rockauto">RockAuto</span>
+    <span class="retailer active" data-site="jcwhitney">JC Whitney</span>
+    <span class="retailer active" data-site="4wheelparts">4 Wheel Parts</span>
+    <span class="retailer active" data-site="jeepworld">JeepWorld</span>
+    <span class="retailer active" data-site="ruggedridge">Rugged Ridge</span>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- Spinner -->
+  <div class="spinner" id="spinner">
+    <span class="spin"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10" stroke="#c8861a" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></span>
+    Searching across retailers…
+  </div>
+
+  <!-- Stats -->
+  <div id="stats-area" style="display:none;">
+    <div class="stats">
+      <div class="stat"><div class="stat-val" id="s-total">0</div><div class="stat-lbl">Found</div></div>
+      <div class="stat stat-in"><div class="stat-val" id="s-in">0</div><div class="stat-lbl">In Stock</div></div>
+      <div class="stat stat-ltd"><div class="stat-val" id="s-ltd">0</div><div class="stat-lbl">Limited</div></div>
+      <div class="stat stat-out"><div class="stat-val" id="s-out">0</div><div class="stat-lbl">Out of Stock</div></div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="empty">
+      <svg viewBox="0 0 24 24"><path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke="#c8861a" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+      Enter a part name above to search across retailers
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Powered by AI · Links open each retailer's search page · Results are illustrative</div>
+
+<script>
+const SITES = {
+  quadratec:     { label: "Quadratec",     url: "https://www.quadratec.com/s/{q}" },
+  morris4x4:     { label: "Morris 4x4",    url: "https://www.morris4x4center.com/search?q={q}" },
+  extremeterrain:{ label: "ExtremeTerrain",url: "https://www.extremeterrain.com/search.html?Ntt={q}" },
+  rockauto:      { label: "RockAuto",      url: "https://www.rockauto.com/en/catalog/jeep/?q={q}" },
+  jcwhitney:     { label: "JC Whitney",    url: "https://www.jcwhitney.com/search?q={q}" },
+  "4wheelparts": { label: "4 Wheel Parts", url: "https://www.4wheelparts.com/search?q={q}" },
+  jeepworld:     { label: "JeepWorld",     url: "https://www.jeepworld.com/search?q={q}" },
+  ruggedridge:   { label: "Rugged Ridge",  url: "https://www.ruggedridge.com/search?q={q}" }
+};
+
+let activeCat = "all";
+let activeSites = new Set(Object.keys(SITES));
+let lastResults = [];
+
+document.querySelectorAll(".chip").forEach(c => {
+  c.onclick = () => {
+    document.querySelectorAll(".chip").forEach(x => x.classList.remove("active"));
+    c.classList.add("active");
+    activeCat = c.dataset.cat;
+    renderResults(lastResults);
+  };
+});
+
+document.querySelectorAll(".retailer").forEach(r => {
+  r.onclick = () => {
+    const s = r.dataset.site;
+    if (activeSites.has(s)) { activeSites.delete(s); r.classList.remove("active"); }
+    else { activeSites.add(s); r.classList.add("active"); }
+  };
+});
+
+document.getElementById("query").addEventListener("keydown", e => { if (e.key === "Enter") doSearch(); });
+
+function badge(s) {
+  if (s === "in")      return `<span class="badge badge-in">In Stock</span>`;
+  if (s === "limited") return `<span class="badge badge-ltd">Limited</span>`;
+  return `<span class="badge badge-out">Out of Stock</span>`;
+}
+
+function renderResults(results) {
+  const filtered = activeCat === "all" ? results : results.filter(r => r.cat === activeCat);
+  const el = document.getElementById("results");
+  if (!filtered.length) { el.innerHTML = `<div class="empty">No results match this filter — try a different category.</div>`; return; }
+
+  const inN = filtered.filter(r => r.stock === "in").length;
+  const ltd = filtered.filter(r => r.stock === "limited").length;
+  const out = filtered.filter(r => r.stock === "out").length;
+  document.getElementById("s-total").textContent = filtered.length;
+  document.getElementById("s-in").textContent = inN;
+  document.getElementById("s-ltd").textContent = ltd;
+  document.getElementById("s-out").textContent = out;
+  document.getElementById("stats-area").style.display = "block";
+
+  el.innerHTML = filtered.map(r => {
+    const si = SITES[r.site] || {};
+    const url = si.url ? si.url.replace("{q}", encodeURIComponent(r.name)) : "#";
+    return `<div class="result-card">
+      <div class="result-left">
+        <div class="result-name">${r.name}</div>
+        <div class="result-meta">${r.partNum ? "Part #" + r.partNum + " · " : ""}${r.cat ? r.cat.charAt(0).toUpperCase() + r.cat.slice(1) : ""}</div>
+        <div class="result-site">🏪 ${si.label || r.site}</div>
+      </div>
+      ${badge(r.stock)}
+      <a class="result-link" href="${url}" target="_blank" rel="noopener" title="View on ${si.label}">
+        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>`;
+  }).join("");
+}
+
+async function doSearch() {
+  const query = document.getElementById("query").value.trim();
+  if (!query) return;
+  const siteList = [...activeSites];
+  if (!siteList.length) { alert("Please select at least one retailer."); return; }
+
+  document.getElementById("spinner").style.display = "block";
+  document.getElementById("results").innerHTML = "";
+  document.getElementById("stats-area").style.display = "none";
+  lastResults = [];
+
+  const sys = `You are a Jeep parts inventory assistant. Return a JSON array of realistic Jeep parts search results. Each object must have:
+- name: specific, realistic part name with brand and fitment
+- site: one of the provided site keys (spread evenly)
+- stock: "in" | "limited" | "out" (roughly 55% in, 20% limited, 25% out)
+- cat: suspension|drivetrain|exterior|interior|engine|electrical|brakes
+- partNum: realistic part number
+Respond ONLY with a valid JSON array. No markdown. No explanation. Return 12-16 results.`;
+
+  const usr = `Query: "${query}"\nSite keys: ${siteList.join(", ")}`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: sys,
+        messages: [{ role: "user", content: usr }]
+      })
+    });
+    const data = await res.json();
+    const text = (data.content || []).map(b => b.text || "").join("");
+    lastResults = JSON.parse(text.replace(/```json|```/g, "").trim());
+  } catch(e) { lastResults = []; }
+
+  document.getElementById("spinner").style.display = "none";
+  if (!lastResults.length) {
+    document.getElementById("results").innerHTML = `<div class="empty">No results returned. Try a different search term.</div>`;
+  } else {
+    renderResults(lastResults);
+  }
+}
+</script>
+</body>
+</html>
