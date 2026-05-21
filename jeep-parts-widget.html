@@ -437,7 +437,7 @@ Respond ONLY with a valid JSON array. No markdown. No explanation. Return 12-16 
   const usr = `Query: "${query}"\nSite keys: ${siteList.join(", ")}`;
 
   try {
-const res = await fetch("/.netlify/functions/claude-proxy", {
+const res = await fetch("https://jeeptorque1.mmartins-ct.workers.dev/", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
